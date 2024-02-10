@@ -1,0 +1,104 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "env": {
+        "jasmine": true,
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": ["react", "react-hooks", "@typescript-eslint"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        // Add your own custom rules here, if any
+        "react/prop-types": "off", // disable prop-types check for TypeScript
+        "@typescript-eslint/explicit-module-boundary-types": "off", // disable explicit return types on functions
+        "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+        "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies,
+        "import/no-unresolved": 2,
+        "import/no-named-as-default": 0,
+        "import/no-duplicates": 2,
+        "no-console": 2,
+        "space-infix-ops": 0,
+        "quotes": [
+            1,
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
+        "strict": [0, "global"],
+        "key-spacing": 0,
+        "new-cap": 0,
+        "no-unused-vars": [
+            2,
+            {
+                "vars": "all",
+                "args": "after-used",
+                "varsIgnorePattern": "[iI]gnored",
+                "argsIgnorePattern": "[iI]gnored"
+            }
+        ],
+        "prefer-const": 2,
+        "require-await": 1,
+        "semi": 2,
+        "space-return-throw-case": 0,
+        "react/display-name": 0,
+        "react/jsx-sort-props": 0,
+        "react/no-did-mount-set-state": 2,
+        "react/no-did-update-set-state": 2,
+        "react/no-multi-comp": 0,
+        "react/no-find-dom-node": 0,
+        "react/jsx-boolean-value": 0,
+        "react/jsx-no-undef": 2,
+        "react/jsx-indent-props": 0,
+        "react/jsx-closing-bracket-location": 0,
+        "jsx-quotes": 2,
+        "@typescript-eslint/no-var-requires": "off",
+        "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }]
+    },
+    "overrides": [
+        {
+            "files": ["**/__tests__/**/*.ts", "**/__tests__/**/*.tsx"],
+            "rules": {
+                "@typescript-eslint/explicit-module-boundary-types": ["error"]
+            }
+        }
+    ],
+    "settings": {
+        "react": {
+            "createClass": "createReactClass",
+            "pragma": "React",
+            "version": "detect"
+        },
+        "import/resolver": {
+            "eslint-import-resolver-custom-alias": {
+                "alias": {
+                    "@": "./src"
+                },
+                "extensions": [".ts", ".tsx", ".js", ".jsx"]
+            },
+            "node": {
+                "extensions": [".ts", ".tsx", ".js", ".jsx"],
+                "moduleDirectory": ["node_modules", "src/"]
+            }
+        },
+        "propWrapperFunctions": ["forbidExtraProps"]
+    },
+    "globals": {
+        "globalThis": true
+    },
+    "ignorePatterns": ["node_modules/", "dist/", "build/", "coverage/"]
+}
