@@ -1,6 +1,7 @@
 const path = require('path');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     mode: 'development',
@@ -31,7 +32,14 @@ module.exports = {
             '.ttf',
             '.eot',
             '.otf'
-        ]
+        ],
+        fallback: {
+            path: require.resolve('path-browserify'),
+            os: require.resolve('os-browserify/browser'),
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+            buffer: require.resolve('buffer/')
+        }
     },
     module: {
         rules: [
@@ -46,7 +54,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './public/index.html'
         }),
-        new ForkTsCheckerWebpackPlugin()
+        new ForkTsCheckerWebpackPlugin(),
+        new Dotenv()
     ],
     devServer: {
         port: 5050,

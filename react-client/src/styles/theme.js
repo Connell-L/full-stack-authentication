@@ -53,7 +53,7 @@ export const theme = createTheme({
                     '&:hover': {
                         backgroundColor: '#6B2737'
                     },
-                    padding: '8px 16px'
+                    padding: '16px 16px'
                 },
                 text: {
                     color: '#456990',
