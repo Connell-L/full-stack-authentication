@@ -14,5 +14,14 @@ export const labels = {
             login: 'Login'
         },
         redirectText: "Don't have an account?"
+    },
+    logout: {
+        buttons: {
+            logout: 'Logout here'
+        },
+        redirectText: 'You are logged in. Do you want to logout?'
+    },
+    home: {
+        title: 'Welcome to the home page!'
     }
 };

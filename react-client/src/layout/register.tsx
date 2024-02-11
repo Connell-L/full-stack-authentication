@@ -10,7 +10,7 @@ import { AuthContext } from '../context/authContext';
 import { useMutation } from '@apollo/react-hooks';
 import { useNavigate } from 'react-router';
 import { REGISTER_USER } from '../gql/users';
-import { useFormikContext } from 'formik';
+import { Loading } from '../components/loading';
 
 const prefix = 'Register';
 
@@ -42,6 +42,10 @@ const RegisterView = () => {
     let navigate = useNavigate();
     const [errors, setErrors] = useState<ErrorState[]>([]);
 
+    const handleRedirectToLogin = () => {
+        navigate('/login');
+    };
+
     const [registerUser, { loading, error }] = useMutation(REGISTER_USER, {
         update(cache, { data: { registerUser: userData } }) {
             context.login(userData);
@@ -58,22 +62,26 @@ const RegisterView = () => {
     };
 
     return (
-        <StyledContainer className={classes.container}>
-            <Grid container mt={10} component="div" className={classes.container}>
-                <FormCard title={labels.login.title}>
-                    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-                        {() => <SignUpForm />}
-                    </Formik>
-                    <RedirectText
-                        text={labels.signUp.redirectText}
-                        buttonText={labels.signUp.buttons.loginHere}
-                        onClick={() => {
-                            console.log('Redirect to sign in');
-                        }}
-                    />
-                </FormCard>
-            </Grid>
-        </StyledContainer>
+        <>
+            {loading ? (
+                <Loading />
+            ) : (
+                <StyledContainer className={classes.container}>
+                    <Grid container mt={10} component="div" className={classes.container}>
+                        <FormCard title={labels.signUp.title}>
+                            <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+                                {() => <SignUpForm />}
+                            </Formik>
+                            <RedirectText
+                                text={labels.signUp.redirectText}
+                                buttonText={labels.signUp.buttons.loginHere}
+                                onClick={handleRedirectToLogin}
+                            />
+                        </FormCard>
+                    </Grid>
+                </StyledContainer>
+            )}
+        </>
     );
 };
 

@@ -1,54 +1,24 @@
-// Import required modules and configuration
-require('dotenv').config();
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const { saveUserData, connectDb } = require('./config/db.js');
+import express from 'express';
+import { pool, connectDb } from './config/db.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-// Initialize Express app
 const app = express();
+
+const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.BASE_URL || 'http://localhost';
+
+// Connect to the database before starting the server
+connectDb().then(() => {
+  console.log('Database connected');
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+});
+
+// middleware
 app.use(express.json());
 
-// Establish database connection
-connectDb()
-  .then(() => {
-    console.log('Database connected');
-    // Start the server after the database connection is established
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('Error connecting to database:', err);
-    process.exit(1); // Exit the process if database connection fails
-  });
-
-// Route to create a new user (protected)
-app.post('/register', authenticateToken, async (req, res) => {
-  try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    await saveUserData(req.body.name, hashedPassword, '');
-    res.status(201).send('User created successfully');
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-// Route to login a user
-app.post('/login', async (req, res) => {
-  // Authenticate user
-  const user = {
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-  };
-  const accessToken = generateAccessToken(user);
-  res.json({ accessToken: accessToken });
-});
-
-// Middleware to authenticate token
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -66,14 +36,108 @@ function generateAccessToken(user) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 }
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Internal Server Error');
+// Set the view engine to ejs
+app.set('view engine', 'ejs');
+
+app.get('/', (req, res) => {
+  res.render('index');
 });
 
-// Handle unhandled rejections
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Rejection:', err);
-  process.exit(1);
+app.post('/register', async (req, res) => {
+  const { name, email, password } = req.body;
+  console.log('User data:', name, email, password);
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  console.log('Hashed password:', hashedPassword);
+
+  pool.query(
+    'SELECT * FROM users WHERE email = $1',
+    [email],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      console.log('User data:', results.rows);
+      if (results.rows.length > 0) {
+        return res.status(400).send('Email already registered');
+      } else {
+        pool.query(
+          'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *',
+          [name, email, hashedPassword],
+          (error, results) => {
+            if (error) {
+              throw error;
+            }
+            console.log('User created:', results.rows[0]);
+            res.status(201).send('User created successfully');
+          }
+        );
+      }
+    }
+  );
+});
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  console.log('User data:', email + password);
+
+  pool.query(
+    'SELECT * FROM users WHERE email = $1',
+    [email],
+    async (error, results) => {
+      if (error) {
+        throw error;
+      }
+      console.log('User data:', results.rows);
+      if (results.rows.length === 0) {
+        return res.status(400).send('User not found');
+      }
+      const user = results.rows[0];
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (!validPassword) {
+        return res.status(400).send('Invalid password');
+      }
+
+      // Generate access token
+      const accessToken = generateAccessToken({
+        name: user.name,
+        email: user.email,
+      });
+
+      // Save the access token in the database
+      pool.query(
+        'UPDATE users SET token = $1 WHERE email = $2',
+        [accessToken, email],
+        (error, results) => {
+          if (error) {
+            throw error;
+          }
+          console.log('Token saved in database');
+        }
+      );
+
+      res.json({ accessToken: accessToken });
+    }
+  );
+});
+
+// get user by id (protected)
+app.get('/user/:id', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  pool.query('SELECT * FROM users WHERE id = $1', [id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    res.status(200).json(results.rows);
+  });
+});
+
+// get all users (protected)
+app.get('/users', authenticateToken, (req, res) => {
+  pool.query('SELECT * FROM users', (error, results) => {
+    if (error) {
+      throw error;
+    }
+    res.status(200).json(results.rows);
+  });
 });

@@ -3,16 +3,15 @@ import { gql } from 'graphql-tag';
 const userFragment = gql`
     fragment UserFragment on User {
         id
-        firstName
-        lastName
+        name
         email
         token
     }
 `;
 
 export const REGISTER_USER = gql`
-    mutation register($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
-        registerUser(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
+    mutation register($name: String!, $email: String!, $password: String!) {
+        registerUser(name: $name, email: $email, password: $password) {
             ...UserFragment
         }
     }
