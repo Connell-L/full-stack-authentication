@@ -33,28 +33,6 @@ const initialValues = {
     password: ''
 };
 
-const FormikSignUpForm = () => {
-    return (
-        <>
-            <Formik
-                initialValues={initialValues}
-                onSubmit={values => {
-                    console.log(values);
-                }}
-            >
-                {() => <SignUpForm />}
-            </Formik>
-            <RedirectText
-                text={labels.signUp.redirectText}
-                buttonText={labels.signUp.buttons.loginHere}
-                onClick={() => {
-                    console.log('Redirect to sign in');
-                }}
-            />
-        </>
-    );
-};
-
 interface ErrorState {
     message: string;
 }
@@ -63,31 +41,36 @@ const RegisterView = () => {
     const context = useContext(AuthContext);
     let navigate = useNavigate();
     const [errors, setErrors] = useState<ErrorState[]>([]);
-    const { values, resetForm } = useFormikContext();
 
     const [registerUser, { loading, error }] = useMutation(REGISTER_USER, {
         update(cache, { data: { registerUser: userData } }) {
             context.login(userData);
             console.log(registerUser);
             navigate('/');
-            resetForm();
         },
         onError({ graphQLErrors }) {
             setErrors(graphQLErrors.map(({ message }) => ({ message })));
-        },
-        variables: {
-            firstName: (values as { firstName: string }).firstName,
-            lastName: (values as { lastName: string }).lastName,
-            email: (values as { email: string }).email,
-            password: (values as { password: string }).password
         }
     });
+
+    const handleSubmit = async (values: typeof initialValues) => {
+        await registerUser({ variables: values });
+    };
 
     return (
         <StyledContainer className={classes.container}>
             <Grid container mt={10} component="div" className={classes.container}>
                 <FormCard title={labels.login.title}>
-                    <FormikSignUpForm />
+                    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+                        {() => <SignUpForm />}
+                    </Formik>
+                    <RedirectText
+                        text={labels.signUp.redirectText}
+                        buttonText={labels.signUp.buttons.loginHere}
+                        onClick={() => {
+                            console.log('Redirect to sign in');
+                        }}
+                    />
                 </FormCard>
             </Grid>
         </StyledContainer>

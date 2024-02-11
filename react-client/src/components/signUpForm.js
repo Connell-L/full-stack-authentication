@@ -1,4 +1,4 @@
-import { Field } from 'formik';
+import { Field, Form } from 'formik';
 import { TextField } from 'formik-mui';
 import { Box, Button, FormControl, FormLabel, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -13,7 +13,7 @@ const StyledBox = styled(Box)({
 
 export const SignUpForm = () => {
     return (
-        <>
+        <Form>
             <StyledBox>
                 <Grid container>
                     <Grid container spacing={2} sx={{ width: '100%' }}>
@@ -42,6 +42,6 @@ export const SignUpForm = () => {
                     {labels.signUp.buttons.signUp}
                 </Button>
             </StyledBox>
-        </>
+        </Form>
     );
 };
