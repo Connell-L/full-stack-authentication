@@ -10,7 +10,7 @@
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "louiseconnell77@gmail.com",
   "license": "ISC",
   "dependencies": {
     "@apollo/datasource-rest": "^6.2.2",
