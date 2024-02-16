@@ -1,10 +1,13 @@
 import * as userService from '../services/userService.js';
 import jwt from 'jsonwebtoken';
 import { configDotenv } from 'dotenv';
+import bcrypt from 'bcryptjs';
+
 configDotenv();
 
 // function to generate acess token
 async function generateAccessToken(user) {
+  console.log('access token', process.env.ACCESS_TOKEN_SECRET);
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 }
 

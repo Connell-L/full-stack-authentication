@@ -1,9 +1,9 @@
-import { configDotenv } from 'dotenv';
 import pkg from 'pg';
-
-const { Pool } = pkg;
+import { configDotenv } from 'dotenv';
 
 configDotenv();
+
+const { Pool } = pkg;
 
 const {
   DB_USER,
@@ -26,11 +26,17 @@ export const pool = new Pool({
 
 export const connectDb = async () => {
   try {
+    console.log('Connecting to database...');
+    console.log('DB_USER:', DB_USER);
+    console.log('DB_PASSWORD:', DB_PASSWORD);
+    console.log('DB_HOST:', DB_HOST);
+    console.log('DB_PORT:', DB_PORT);
+    console.log('DB_NAME:', DB_NAME);
     const client = await pool.connect();
     console.log('Database connected');
     client.release();
   } catch (error) {
     console.error('Error connecting to database:', error);
-    process.exit(1);
+    throw new Error('Error connecting to database');
   }
 };
