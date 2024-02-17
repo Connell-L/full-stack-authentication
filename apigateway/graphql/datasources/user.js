@@ -18,7 +18,7 @@ class UserDataSource extends RESTDataSource {
 
   async registerUser(registerInput) {
     try {
-      const newUser = await this.post('/register', registerInput);
+      const newUser = await this.post('/api/users/register', registerInput);
       return newUser;
     } catch (error) {
       console.error('Error registering user:', error);

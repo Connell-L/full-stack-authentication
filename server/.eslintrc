@@ -1,0 +1,47 @@
+{
+    "env": {
+        "node": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "commonjs",
+        "ecmaFeatures": {
+            "jsx": false
+        }
+    },
+    "plugins": ["import", "node"],
+    "extends": ["eslint:recommended"],
+    "rules": {
+        "no-console": "off",
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "prefer-const": "error",
+        "require-await": "error",
+        "no-unused-vars": "off",
+        "strict": ["error", "global"],
+        "key-spacing": "off",
+        "new-cap": "off",
+        "space-infix-ops": "off",
+        "space-return-throw-case": "off",
+        "import/no-unresolved": "error",
+        "import/no-named-as-default": "off",
+        "import/no-duplicates": "error"
+    },
+    "overrides": [
+        {
+            "files": ["**/__tests__/**/*.js", "**/__tests__/**/*.jsx"],
+            "rules": {
+                "strict": "off"
+            }
+        }
+    ],
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [".js"] // Remove TypeScript extension
+            }
+        }
+    },
+    "ignorePatterns": ["node_modules/", "dist/", "build/", "coverage/"]
+}

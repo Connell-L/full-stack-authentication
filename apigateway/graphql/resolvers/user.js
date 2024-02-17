@@ -2,9 +2,9 @@ import UserDataSource from '../datasources/user.js';
 
 const resolvers = {
   Query: {
-    user: async (_, { id }, {}) => {
+    user: async (_, { id }, { dataSources }) => {
       try {
-        const user = await UserDataSource.getUser(id);
+        const user = await dataSources.userDataSource.getUser(id);
         return user;
       } catch (error) {
         console.error('Error getting user:', error);
@@ -13,18 +13,28 @@ const resolvers = {
     },
   },
   Mutation: {
-    registerUser: async (_, { registerInput }, {}) => {
+    registerUser: async (_, { registerInput }, { dataSources }) => {
+      console.log(dataSources); // Log the dataSources object
+      if (dataSources && dataSources.userDataSource) {
+        console.log('UserDataSource exists in dataSources');
+      } else {
+        console.log('UserDataSource does not exist in dataSources');
+      }
       try {
-        const newUser = await UserDataSource.registerUser(registerInput);
+        const newUser = await dataSources.userDataSource.registerUser(
+          registerInput
+        );
         return newUser;
       } catch (error) {
         console.error('Error registering user:', error);
         throw error;
       }
     },
-    loginUser: async (_, { loginInput }, {}) => {
+    loginUser: async (_, { loginInput }, { dataSources }) => {
       try {
-        const userToken = await UserDataSource.loginUser(loginInput);
+        const userToken = await dataSources.userDataSource.loginUser(
+          loginInput
+        );
         return userToken;
       } catch (error) {
         console.error('Error logging in user:', error);
