@@ -10,8 +10,8 @@ const userFragment = gql`
 `;
 
 export const REGISTER_USER = gql`
-    mutation register($name: String!, $email: String!, $password: String!) {
-        registerUser(name: $name, email: $email, password: $password) {
+    mutation RegisterUser($registerInput: RegisterInput) {
+        registerUser(registerInput: $registerInput) {
             ...UserFragment
         }
     }
@@ -19,7 +19,7 @@ export const REGISTER_USER = gql`
 `;
 
 export const LOGIN_USER = gql`
-    mutation login($email: String!, $password: String!) {
+    mutation loginUser($email: String!, $password: String!) {
         loginUser(email: $email, password: $password) {
             ...UserFragment
         }

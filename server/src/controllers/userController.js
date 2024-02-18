@@ -7,7 +7,6 @@ configDotenv();
 
 // function to generate acess token
 async function generateAccessToken(user) {
-    console.log('access token', process.env.ACCESS_TOKEN_SECRET);
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 }
 
@@ -25,7 +24,7 @@ async function registerUser(req, res) {
     try {
         // Attempt to register the user
         const newUser = await userService.registerUser(name, email, password);
-        res.status(201).send('User created successfully');
+        return newUser && res.status(201).send('User created successfully');
     } catch (error) {
         if (error.message === 'Email already registered') {
             return res.status(400).send('Email already registered');

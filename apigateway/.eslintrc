@@ -1,0 +1,64 @@
+{
+    "env": {
+        "node": true,
+        "es6": true,
+        "jest": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "script"
+    },
+    "extends": ["eslint:recommended", "plugin:jest/recommended"],
+    "plugins": ["jest", "@graphql-eslint"],
+    "rules": {
+        "no-console": "error",
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "prefer-const": "error",
+        "no-unused-vars": "error",
+        "strict": ["off", "global"],
+        "jest/no-disabled-tests": "warn",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
+        "jest/prefer-to-have-length": "warn",
+        "jest/valid-expect": "error",
+        "jest/valid-expect-in-promise": "error",
+        "@graphql-eslint/require-deprecation-reason": "error",
+        "@graphql-eslint/known-type-names": "error",
+        "@graphql-eslint/known-directives": "error",
+        "@graphql-eslint/unique-argument-names": "error",
+        "@graphql-eslint/unique-directive-names": "error",
+        "@graphql-eslint/unique-enum-value-names": "error",
+        "@graphql-eslint/unique-field-definition-names": "error",
+        "@graphql-eslint/unique-input-field-names": "error",
+        "@graphql-eslint/unique-operation-name": "error",
+        "@graphql-eslint/unique-type-names": "error",
+        "@graphql-eslint/unique-variable-names": "error",
+        "@graphql-eslint/unique-fragment-name": "error"
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/__tests__/**/*.js",
+                "**/__tests__/**/*.cjs",
+                "**/__tests__/**/*.mjs",
+                "*.gql",
+                "*.graphql",
+                "*.js",
+                "*.cjs",
+                "*.mjs"
+            ],
+            "rules": {
+                "strict": "off"
+            }
+        }
+    ],
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [".js"]
+            }
+        }
+    },
+    "ignorePatterns": ["node_modules/", "dist/", "build/", "coverage/"]
+}

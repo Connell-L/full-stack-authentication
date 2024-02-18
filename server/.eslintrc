@@ -1,36 +1,26 @@
 {
     "env": {
         "node": true,
-        "es6": true
+        "es6": true,
+        "jest": true
     },
     "parserOptions": {
         "ecmaVersion": 2022,
-        "sourceType": "commonjs",
-        "ecmaFeatures": {
-            "jsx": false
-        }
+        "sourceType": "script"
     },
-    "plugins": ["import", "node"],
     "extends": ["eslint:recommended"],
+    "plugins": ["jest"],
     "rules": {
-        "no-console": "off",
+        "no-console": "error",
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
         "prefer-const": "error",
-        "require-await": "error",
-        "no-unused-vars": "off",
-        "strict": ["error", "global"],
-        "key-spacing": "off",
-        "new-cap": "off",
-        "space-infix-ops": "off",
-        "space-return-throw-case": "off",
-        "import/no-unresolved": "error",
-        "import/no-named-as-default": "off",
-        "import/no-duplicates": "error"
+        "no-unused-vars": "error",
+        "strict": ["off", "global"]
     },
     "overrides": [
         {
-            "files": ["**/__tests__/**/*.js", "**/__tests__/**/*.jsx"],
+            "files": ["**/__tests__/**/*.js", "**/__tests__/**/*.cjs", "**/__tests__/**/*.mjs"],
             "rules": {
                 "strict": "off"
             }
@@ -39,7 +29,7 @@
     "settings": {
         "import/resolver": {
             "node": {
-                "extensions": [".js"] // Remove TypeScript extension
+                "extensions": [".js"]
             }
         }
     },

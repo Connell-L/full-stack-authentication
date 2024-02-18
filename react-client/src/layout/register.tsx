@@ -39,7 +39,7 @@ interface ErrorState {
 
 const RegisterView = () => {
     const context = useContext(AuthContext);
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const [errors, setErrors] = useState<ErrorState[]>([]);
 
     const handleRedirectToLogin = () => {
@@ -49,6 +49,7 @@ const RegisterView = () => {
     const [registerUser, { loading, error }] = useMutation(REGISTER_USER, {
         update(cache, { data: { registerUser: userData } }) {
             context.login(userData);
+            // eslint-disable-next-line no-console
             console.log(registerUser);
             navigate('/');
         },
@@ -58,7 +59,15 @@ const RegisterView = () => {
     });
 
     const handleSubmit = async (values: typeof initialValues) => {
-        await registerUser({ variables: values });
+        await registerUser({
+            variables: {
+                registerInput: {
+                    name: values.name,
+                    email: values.email,
+                    password: values.password
+                }
+            }
+        });
     };
 
     return (
