@@ -33,6 +33,17 @@ class UserDataSource extends RESTDataSource {
             throw new Error(`Failed to post user: ${error.message}`);
         }
     }
+
+    async loginUser(email, password) {
+        try {
+            return await this.post('api/users/login', {
+                email,
+                password
+            });
+        } catch (error) {
+            throw new Error(`Failed to post user: ${error.message}`);
+        }
+    }
 }
 
 module.exports = UserDataSource;

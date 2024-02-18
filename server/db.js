@@ -18,18 +18,14 @@ const pool = new Pool({
 
 const connectDb = async () => {
     try {
-        console.log('Connecting to database...');
-        console.log('DB_USER:', DB_USER);
-        console.log('DB_PASSWORD:', DB_PASSWORD);
-        console.log('DB_HOST:', DB_HOST);
-        console.log('DB_PORT:', DB_PORT);
-        console.log('DB_NAME:', DB_NAME);
         const client = await pool.connect();
+        // eslint-disable-next-line no-console
         console.log('Database connected');
         client.release();
     } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error connecting to database:', error);
-        throw new Error('Error connecting to database');
+        throw error;
     }
 };
 

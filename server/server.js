@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 // Connect to the database before starting the server
 connectDb().then(() => {
     app.listen(PORT, () => {
+        // eslint-disable-next-line no-console
         console.log(`Server running at ${BASE_URL}:${PORT}`);
     });
 });

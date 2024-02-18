@@ -12,8 +12,6 @@ async function generateAccessToken(user) {
 
 // Controller function for user registration
 async function registerUser(req, res) {
-    console.log('Request body:', req.body); // Log the request body
-
     const { name, email, password } = req.body;
 
     // Check for empty fields
@@ -56,36 +54,63 @@ async function loginUser(req, res) {
             email: user.email
         });
 
-        // Save the access token in the database
-        await userService.updateUserToken(email, accessToken);
-
-        res.json({ accessToken: accessToken });
+        res.setHeader('Authorization', `Bearer ${accessToken}`);
+        res.status(200).send('Login successful');
     } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error logging in user:', error);
         res.status(500).send('Internal server error');
     }
 }
 
-// Controller function to get user by id (protected)
 async function getUserById(req, res) {
     const id = req.params.id;
     try {
+        // Extract JWT token from request header
+        const token = req.headers.authorization;
+        if (!token) {
+            return res.status(401).send('Unauthorized: Missing token');
+        }
+
+        jwt.verify(token.replace('Bearer ', ''), process.env.ACCESS_TOKEN_SECRET);
+
+        // Add additional validation if needed, for example, check if the user ID in the token matches the requested ID
+
         const user = await userService.getUserById(id);
         if (!user) {
             return res.status(404).send('User not found');
         }
         res.status(200).json(user);
     } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error retrieving user by ID:', error);
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).send('Unauthorized: Invalid token');
+        }
         res.status(500).send('Internal server error');
     }
 }
 
-// Controller function to get all users (protected)
 async function getAllUsers(req, res) {
     try {
+        // Extract JWT token from request header
+        const token = req.headers.authorization;
+        if (!token) {
+            return res.status(401).send('Unauthorized: Missing token');
+        }
+
+        jwt.verify(token.replace('Bearer ', ''), process.env.ACCESS_TOKEN_SECRET);
+
+        // Add additional validation if needed
+
         const users = await userService.getAllUsers();
         res.status(200).json(users);
     } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error retrieving all users:', error);
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).send('Unauthorized: Invalid token');
+        }
         res.status(500).send('Internal server error');
     }
 }
